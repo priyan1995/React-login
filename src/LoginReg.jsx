@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Fire } from './Fire';
+import { Home } from './Home';
 
 
 export const LoginReg = () => {
@@ -12,13 +13,13 @@ export const LoginReg = () => {
     const [hasAccount, setHasAccount] = useState(false);
 
     const clearInput = () => {
-        setUser("");
-        setEmail("");
+        setUser('');
+        setEmail('');
     }
 
     const clearErrors = () => {
-        emailError("");
-        passwordError("");
+        setEmailError('');
+        setPasswordError('');
     }
 
     const handleLogin = () => {
@@ -58,9 +59,7 @@ export const LoginReg = () => {
             });
     }
 
-    const handleLogout = () => {
-        Fire.auth().signOut();
-    }
+
 
     const authListener = () => {
         Fire.auth().onAuthStateChanged((user) => {
@@ -77,56 +76,79 @@ export const LoginReg = () => {
         authListener();
     }, [])
 
+    const handleLogout = () => {
+        Fire.auth().signOut();
+    }
+
+
 
     return (
         <>
 
-            <section className="login-sec">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <div className="form-group">
-                                <label>User Name</label>
-                                <input
-                                    type="text"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required />
-                                <p className="error">{emailError}</p>
+            {user ? (
+
+                <>
+                    <Home handleLogout={handleLogout} />
+                </>
+
+            ) : (
+                <>
+
+
+                    <section className="login-sec">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-lg-12">
+                                    <div className="form-group">
+                                        <label>User Name</label>
+                                        <input
+                                            type="text"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required />
+                                        <p className="error">{emailError}</p>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Password</label>
+                                        <input
+                                            type="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required />
+                                        <p className="error">{passwordError}</p>
+                                    </div>
+
+                                    <div className="form-group">
+                                        {hasAccount ? (
+                                            <>
+
+                                                <button className="btn btn-primary" onClick={handleLogin}>Sign In</button>
+                                                <p>Dont'have an account? <span onClick={() => setHasAccount(!hasAccount)}>Sign Up</span></p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <button className="btn btn-primary" onClick={handleSignup}>Sign Up</button>
+                                                <p>have an account? <span onClick={() => setHasAccount(!hasAccount)}>Sign In</span></p>
+                                            </>
+                                        )}
+
+                                    </div>
+
+
+
+                                </div>
                             </div>
-
-                            <div className="form-group">
-                                <label>Password</label>
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required />
-                                <p className="error">{passwordError}</p>
-                            </div>
-
-                            <div className="form-group">
-                                {hasAccount ? (
-                                    <>
-
-                                        <button className="btn btn-primary" onClick={handleLogin}>Sign In</button>
-                                        <p>Dont'have an account? <span onClick={()=>setHasAccount(!hasAccount)}>Sign Up</span></p>
-                                    </>
-                                ) : (
-                                    <>
-                                        <button className="btn btn-primary" onClick={handleSignup}>Sign Up</button>
-                                        <p>have an account? <span onClick={()=>setHasAccount(!hasAccount)}>Sign In</span></p>
-                                    </>
-                                )}
-
-                            </div>
-
-
-
                         </div>
-                    </div>
-                </div>
-            </section>
+                    </section>
+                </>
+            )}
+
+
+
+
+
+
 
         </>
     )
